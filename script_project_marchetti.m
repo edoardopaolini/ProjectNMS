@@ -24,7 +24,7 @@ volume = 1/avogadro;
 mass_fib = 340000/(avogadro*1e3);
 % initial amount of fibrinogen
 fbni = 2.5/mass_fib;
-%fbni = 2.5;
+fbni = 1000;
 
 % THROMBIN
 % initial concentration of Thrombin = 0.75 units/mL
@@ -35,13 +35,13 @@ m_tr1 = 0.324 * 0.75; % conversion unit-microgrammi * units nostre
 m_tr2 = 37400/(avogadro*1e6);
 % initial amount of fibrinogen
 thb = m_tr1/m_tr2;
-%thb = 0.75;
+thb = 800;
 
 % ACTIVE FIBRINOGEN
 fbna = 0;
 
 % FIBRIN MATRIX
-fm = 0;
+fm = 100;
 
 % COMPLEX InatcivateFIBRINOGEN-THROMBIN
 c0 = 0;
@@ -67,17 +67,17 @@ Xinit = zeros(7,1);
 r = zeros(11,1);
 
 % Initial Rates
-r(1) = 1;
-r(2) = 100;
-r(3) = 10000;
-r(4) = 1;
-r(5) = 100;
-r(6) = 100;
-r(7) = 100;
-r(8) = 1;
-r(9) = 100;
-r(10) = 1;
-r(11) = 100;
+r(1) = 0.031;
+r(2) = 0;
+r(3) = 1931;
+r(4) = 0.49;
+r(5) = 250;
+r(6) = 298;
+r(7) = 0.26;
+r(8) = 2.6;
+r(9) = 26.9;
+r(10) = 15.5;
+r(11) = 375;
 
 % Initial Amount
 Xinit(1) = fbna;
@@ -102,14 +102,15 @@ Z(6) = r(4)*Xinit(1)*Xinit(3) - r(5)*Xinit(6) - r(6)*Xinit(6) + r(7)*Xinit(3)*Xi
 Z(7) = r(8)*Xinit(1)*Xinit(6) - r(9)*Xinit(7) + r(11)*Xinit(6)*Xinit(2) - r(10)*Xinit(7);
 %}
 
-%% LEAST SQUARE
+
+%% ODEs Simulation with ODE15S
 
 %integration bounds
 tin=0;
-tfin=300;
+tfin=10;
 
 %integrate the model
-[T,Y] = ode45(@(t,X) enzReact(t,X,r), [0 300], Xinit);
+[T,Y] = ode15s(@(t,X) enzReact(t,X,r), tin:0.05:tfin, Xinit);
 
 
 % plot the simulation results
