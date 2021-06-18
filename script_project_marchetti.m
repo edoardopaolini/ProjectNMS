@@ -24,7 +24,7 @@ volume = 1/avogadro;
 mass_fib = 340000/(avogadro*1e3);
 % initial amount of fibrinogen
 fbni = 2.5/mass_fib;
-fbni = 10000;
+fbni = 500;
 
 % THROMBIN
 % initial concentration of Thrombin = 0.75 units/mL
@@ -35,13 +35,13 @@ m_tr1 = 0.324 * 0.75; % conversion unit-microgrammi * units nostre
 m_tr2 = 37400/(avogadro*1e6);
 % initial amount of fibrinogen
 thb = m_tr1/m_tr2;
-thb = 8000;
+thb = 300;
 
 % ACTIVE FIBRINOGEN
 fbna = 0;
 
 % FIBRIN MATRIX
-fm = 1000;
+fm = 50;
 
 % COMPLEX InatcivateFIBRINOGEN-THROMBIN
 c0 = 0;
@@ -67,17 +67,19 @@ Xinit = zeros(7,1);
 r = zeros(11,1);
 
 % Initial Rates
-r(1) = 0.031;
+r(1) = 0.0284;
 r(2) = 0;
-r(3) = 1931;
-r(4) = 0.49;
-r(5) = 250;
-r(6) = 298;
-r(7) = 0.26;
-r(8) = 2.6;
-r(9) = 26.9;
+r(3) = 2064;
+r(4) = 0.484;
+r(5) = 290;
+r(6) = 300;
+r(7) = 0.286;
+r(8) = 2.64;
+r(9) = 22.7;
 r(10) = 15.5;
-r(11) = 375;
+r(11) = 366;
+
+%r = r./(max(r));
 
 % Initial Amount
 Xinit(1) = fbna;
@@ -88,14 +90,17 @@ Xinit(5) = c0;
 Xinit(6) = c1;
 Xinit(7) = c2;
 
+mi = max(Xinit);
+Xinit = Xinit./mi;
+
 % ODEs
 % fbna derivatives
 %{
-Z(1) = -r(4)*Xinit(1)*Xinit(3) + r(5)*Xinit(6) - r(8)*Xinit(4)*Xinit(6) + r(9)*Xinit(7) + r(3)*Xinit(5);
+Z(1) = -r(4)*Xinit(1)*Xinit(3) + r(5)*Xinit(6) - r(8)*Xinit(1)*Xinit(6) + r(9)*Xinit(7) + r(3)*Xinit(5);
 Z(2) = r(6)*Xinit(6) - r(7)*Xinit(3)*Xinit(2) + r(10)*Xinit(7) - r(11)*Xinit(6)*Xinit(2);
 Z(3) = -r(4)*Xinit(1)*Xinit(3) + r(5)*Xinit(6) + r(6)*Xinit(6) - r(7)*Xinit(3)*Xinit(2) ...
     - r(1)*Xinit(4)*Xinit(3) + r(2)*Xinit(5) + r(3)*Xinit(5);
-Z(4) = -r(1)*Xinit(4) + r(2)*Xinit(5);
+Z(4) = -r(1)*Xinit(4)*Xinit(3) + r(2)*Xinit(5);
 Z(5) = r(1)*Xinit(4)*Xinit(3) -  r(2)*Xinit(5) - r(3)*Xinit(5);
 Z(6) = r(4)*Xinit(1)*Xinit(3) - r(5)*Xinit(6) - r(6)*Xinit(6) + r(7)*Xinit(3)*Xinit(2) ...
     + r(9)*Xinit(7) - r(8)*Xinit(1)*Xinit(6) + r(10)*Xinit(7) - r(11)*Xinit(6)*Xinit(2);
@@ -107,29 +112,23 @@ Z(7) = r(8)*Xinit(1)*Xinit(6) - r(9)*Xinit(7) + r(11)*Xinit(6)*Xinit(2) - r(10)*
 
 %integration bounds
 tin=0;
-tfin=10;
+tfin=255;
 
 %integrate the model
-[T,Y] = ode15s(@(t,X) enzReact(t,X,r), tin:0.05:tfin, Xinit);
-
-
-% plot the simulation results
-figure(1)
-plot(T,Y, 'LineWidth', 1.5)
-% fbna(1), fm(2), thb(3), fbni(4), c0(5), c1(6), c2(7)
-legend({'FBNa', 'FM','THB' , 'FBNi' , 'C0', 'C1', 'C2'})
+[T,Y] = ode15s(@(t,X) enzReact(t,X,r), tin:1:tfin, Xinit);
 
 % To get the same colors to the data and simulations
 
 %set colors as Matlab default
 
-colorMap = lines(6);
+colorMap = lines(7);
+
+Y = Y.*mi;
 
 figure(1)
-plot(T,Y(:,1), 'LineWidth', 1.5, 'color', colorMap(1,:))
-hold on 
-for i=2:5
-    plot(T,Y(:,i), 'LineWidth', 1.5, 'color', colorMap(i,:))
+for i=1:7
+    plot(T,Y(:,i), 'LineWidth', 1.5, 'color', colorMap(i,:));
+    hold on
 end
 legend({'FBNa', 'FM','THB' , 'FBNi' , 'C0', 'C1', 'C2'})
 hold off
