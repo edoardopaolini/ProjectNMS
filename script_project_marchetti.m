@@ -20,9 +20,18 @@ volume = 1/avogadro;
 % che una molecola di fibrinogeno pesa circa 340 kDa, possiamo trovare
 % quante molecole di fibrinogeno ci sono inizialmente in un mL di soluzione
 % calcoliamo la massa di una molecola di fibrinogeno e facciamo 2.5/ans
-mass_fib = 340000/avogadro;
+mass_fib = 340000/(avogadro*1e3);
 % initial amount of fibrinogen
 fbni = 2.5/mass_fib;
 
 
 % initial concentration of Thrombin = 0.75 units/mL
+% Thrombin Molecular mass: 37.4 kDa
+% Specific Activity: >= 2,000 NIH units/mg
+% 1 NIH unit = 0.324 +- 0.073 microgrammi
+m_tr1 = 0.324 * 0.75; % conversion unit-microgrammi * units nostre
+m_tr2 = 37400/(avogadro*1e6);
+% initial amount of fibrinogen
+thb = m_tr1/m_tr2;
+
+
