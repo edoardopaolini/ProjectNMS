@@ -24,7 +24,7 @@ volume = 1/avogadro;
 mass_fib = 340000/(avogadro*1e3);
 % initial amount of fibrinogen
 fbni = 2.5/mass_fib;
-fbni = 1000;
+fbni = 10000;
 
 % THROMBIN
 % initial concentration of Thrombin = 0.75 units/mL
@@ -35,13 +35,13 @@ m_tr1 = 0.324 * 0.75; % conversion unit-microgrammi * units nostre
 m_tr2 = 37400/(avogadro*1e6);
 % initial amount of fibrinogen
 thb = m_tr1/m_tr2;
-thb = 800;
+thb = 8000;
 
 % ACTIVE FIBRINOGEN
 fbna = 0;
 
 % FIBRIN MATRIX
-fm = 100;
+fm = 1000;
 
 % COMPLEX InatcivateFIBRINOGEN-THROMBIN
 c0 = 0;
@@ -131,6 +131,7 @@ hold on
 for i=2:5
     plot(T,Y(:,i), 'LineWidth', 1.5, 'color', colorMap(i,:))
 end
+legend({'FBNa', 'FM','THB' , 'FBNi' , 'C0', 'C1', 'C2'})
 hold off
 
 
