@@ -24,7 +24,7 @@ volume = 1/avogadro;
 mass_fib = 340000/(avogadro*1e3);
 % initial amount of fibrinogen
 fbni = 2.5/mass_fib;
-fbni = 500;
+fbni = 1000;
 
 % THROMBIN
 % initial concentration of Thrombin = 0.75 units/mL
@@ -91,7 +91,8 @@ Xinit(6) = c1;
 Xinit(7) = c2;
 
 mi = max(Xinit);
-Xinit = Xinit./mi;
+%Xinit = Xinit
+%Xinit = Xinit./mi;
 
 % ODEs
 % fbna derivatives
@@ -123,7 +124,8 @@ tfin=255;
 
 colorMap = lines(7);
 
-Y = Y.*mi;
+% Y = Y
+%Y = Y.*mi;
 
 figure(1)
 for i=1:7
@@ -131,6 +133,54 @@ for i=1:7
     hold on
 end
 legend({'FBNa', 'FM','THB' , 'FBNi' , 'C0', 'C1', 'C2'})
+hold off
+
+%% OPTIMIZATION
+
+
+
+%% Stocastici
+
+% fi(1), fa(2), t(3), c0(4), c1(5), c2(6), fm(7)
+% fbna(1), fm(2), thb(3), fbni(4), c0(5), c1(6), c2(7)
+
+vMinus = [1 0 1 0 0 0 0; 0 0 0 1 0 0 0; 0 0 0 1 0 0 0; 0 1 1 0 0 0 0; ...
+    0 0 0 0 1 0 0; 0 0 0 0 1 0 0; 0 0 1 0 0 0 1; 0 1 0 0 1 0 0; ...
+    0 0 0 0 0 1 0; 0 0 0 0 0 1 0; 0 0 0 0 1 0 1];
+
+vPlus = [0 0 0 1 0 0 0; 1 0 1 0 0 0 0; 0 1 1 0 0 0 0; 0 0 0 0 1 0 0; ...
+    0 1 1 0 0 0 0; 0 0 1 0 0 0 1; 0 0 0 0 1 0 0; 0 0 0 0 0 1 0; ...
+    0 1 0 0 1 0 0; 0 0 0 0 1 0 1; 0 0 0 0 0 1 0];
+
+c = r;
+
+initialState = zeros(7,1);
+initialState(1,1) = Xinit(4,1);
+initialState(2,1) = Xinit(1,1);
+initialState(3,1) = Xinit(3,1);
+initialState(4,1) = Xinit(5,1);
+initialState(5,1) = Xinit(6,1);
+initialState(6,1) = Xinit(7,1);
+initialState(7,1) = Xinit(2,1);
+initialState = initialState';
+
+delta = 0.15;
+
+tMax = 10;
+
+dT = 0.001;
+
+[T,Y] = simRSSA_disc(vMinus,vPlus,c,initialState,delta,tMax,dT);
+
+colorMap = lines(7);
+
+figure(1)
+for i=1:7
+    plot(T,Y(:,i), 'LineWidth', 1.5, 'color', colorMap(i,:));
+    hold on
+end
+% fi(1), fa(2), t(3), c0(4), c1(5), c2(6), fm(7)
+legend({'FBNi', 'FBNa', 'THB', 'C0', 'C1', 'C2', 'FM'})
 hold off
 
 
