@@ -23,7 +23,7 @@ volume = 1/avogadro;
 % calcoliamo la massa di una molecola di fibrinogeno e facciamo 2.5/ans
 mass_fib = 340000/(avogadro*1e3);
 % initial amount of fibrinogen
-fbni = 2.5/mass_fib;
+%fbni = 2.5/mass_fib;
 fbni = 1000;
 
 % THROMBIN
@@ -34,7 +34,7 @@ fbni = 1000;
 m_tr1 = 0.324 * 0.75; % conversion unit-microgrammi * units nostre
 m_tr2 = 37400/(avogadro*1e6);
 % initial amount of fibrinogen
-thb = m_tr1/m_tr2;
+%thb = m_tr1/m_tr2;
 thb = 300;
 
 % ACTIVE FIBRINOGEN
@@ -92,7 +92,10 @@ Xinit(7) = c2;
 
 mi = max(Xinit);
 %Xinit = Xinit
-Xinit = Xinit./mi;
+choice = input('Vuoi i dati normalizzati? [y/n]: ');
+if choice=='y'
+    Xinit = Xinit./mi;
+end
 
 % ODEs
 % fbna derivatives
@@ -124,8 +127,9 @@ tfin=255;
 
 colorMap = lines(7);
 
-% Y = Y
-Y = Y;
+if choice=='y'
+    Y = Y.*mi;
+end
 
 figure(1)
 for i=1:7
@@ -138,11 +142,28 @@ hold off
 %% OPTIMIZATION
 
 Tolerance = 1e-15;
+if choice=='y'
+    Y = Y./mi;
+end
+
+% Initial Rates
+r2 = zeros(11,1);
+r2(1) = 10000;
+r2(2) = 100;
+r2(3) = 100;
+r2(4) = 100;
+r2(5) = 100;
+r2(6) = 100;
+r2(7) = 1;
+r2(8) = 1;
+r2(9) = 100;
+r2(10) = 1;
+r2(11) = 1;
 
 ms              = MultiStart('UseParallel','always','Display','iter','StartPointsToRun','bounds','TolFun',Tolerance,'TolX',Tolerance);
 
 nOptRuns        = 12;
-x0              = r;
+x0              = r2;
 lb              = zeros(size(x0));
 ub              = 10*ones(size(x0));
 problem         = createOptimProblem('lsqnonlin','objective',@(par) myobjfun(par, 0:1:255, Y, 0, 255 , Xinit), ...
@@ -170,8 +191,9 @@ r = EstParametersMS;
 
 colorMap = lines(7);
 
-% Y = Y
-Y = Y;
+if choice=='y'
+    Y = Y.*mi;
+end
 
 figure(2)
 for i=1:7
