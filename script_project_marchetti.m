@@ -92,7 +92,7 @@ Xinit(7) = c2;
 
 mi = max(Xinit);
 %Xinit = Xinit
-%Xinit = Xinit./mi;
+Xinit = Xinit./mi;
 
 % ODEs
 % fbna derivatives
@@ -125,7 +125,7 @@ tfin=255;
 colorMap = lines(7);
 
 % Y = Y
-%Y = Y.*mi;
+Y = Y.*mi;
 
 figure(1)
 for i=1:7
@@ -136,6 +136,23 @@ legend({'FBNa', 'FM','THB' , 'FBNi' , 'C0', 'C1', 'C2'})
 hold off
 
 %% OPTIMIZATION
+
+Tolerance = 1e-10;
+
+ms              = MultiStart('UseParallel','always','Display','iter','StartPointsToRun','bounds','TolFun',Tolerance,'TolX',Tolerance);
+
+nOptRuns        = 12;
+x0              = r;
+lb              = zeros(size(x0));
+ub              = 10*ones(size(x0));
+problem         = createOptimProblem('lsqnonlin','objective',@(par) myobjfun(par, 0:1:255, Y, 0, 255 , Xinit), ...
+                'x0' ,x0 ,'lb',lb,'ub',ub);
+
+% problem         = createOptimProblem('lsqnonlin','objective',@(par) myobjfun(par, TimeExpDataEnzReact, ExpDataEnzReact, 0, 300 , Xiniz), ...
+%                 'x0' ,s2 ,'lb',lb,'ub',ub, 'options', opts); 
+% more precise but slower
+
+EstParametersMS = run(ms,problem,nOptRuns);
 
 
 
