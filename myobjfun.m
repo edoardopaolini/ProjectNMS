@@ -1,7 +1,7 @@
 function [residual, SSE] = myobjfun(rates, te, ye, tin, tfin , Xiniz)
 
-    % [t,y] = ode45(@(t,X) enzReaction(t,X, rates), [tin tfin], Xiniz);
-    [t,y]  = ode15s(@(t,X) enzReaction(t,X, rates), [tin tfin], Xiniz);
+    % [t,y] = ode45(@(t,X) enzReact(t,X, rates), [tin tfin], Xiniz);
+    [t,y]  = ode15s(@(t,X) enzReact(t,X, rates), [tin tfin], Xiniz);
     ysimul = interp1(t,y,te);
 
     %unweighted residual

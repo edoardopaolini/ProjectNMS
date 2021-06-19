@@ -125,7 +125,7 @@ tfin=255;
 colorMap = lines(7);
 
 % Y = Y
-Y = Y.*mi;
+Y = Y;
 
 figure(1)
 for i=1:7
@@ -137,7 +137,7 @@ hold off
 
 %% OPTIMIZATION
 
-Tolerance = 1e-10;
+Tolerance = 1e-15;
 
 ms              = MultiStart('UseParallel','always','Display','iter','StartPointsToRun','bounds','TolFun',Tolerance,'TolX',Tolerance);
 
@@ -154,6 +154,32 @@ problem         = createOptimProblem('lsqnonlin','objective',@(par) myobjfun(par
 
 EstParametersMS = run(ms,problem,nOptRuns);
 
+%% Determinismo con nuovi parametri
+
+%integration bounds
+tin=0;
+tfin=255;
+r = EstParametersMS;
+
+%integrate the model
+[T,Y] = ode15s(@(t,X) enzReact(t,X,r), tin:1:tfin, Xinit);
+
+% To get the same colors to the data and simulations
+
+%set colors as Matlab default
+
+colorMap = lines(7);
+
+% Y = Y
+Y = Y;
+
+figure(2)
+for i=1:7
+    plot(T,Y(:,i), 'LineWidth', 1.5, 'color', colorMap(i,:));
+    hold on
+end
+legend({'FBNa', 'FM','THB' , 'FBNi' , 'C0', 'C1', 'C2'})
+hold off
 
 
 %% Stocastici
