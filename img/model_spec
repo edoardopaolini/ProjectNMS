@@ -1,0 +1,21 @@
+#  MODEL (param_paper)
+System
+units of measurement volume=l, time=min
+
+System
+	volume=1.660538783e-24 # volume is set to 1/nAvogadro
+	abundances F_i = 1000, T=300, F_a = 0, M=50, C_0 = 0, C_1 =0, C_2=0
+	#abundances F_i = 1, T=0.3, F_a = 0, M=0.05, C_0 = 0, C_1 =0, C_2=0
+	
+	F_i+T-> C_0 rate 0.0284
+	C_0 -> F_i+T rate 0
+	C_0 -> F_a+T rate 2064
+	F_a+T -> C_1 rate 0.484
+	C_1 -> F_a+T rate 290
+	C_1-> T+M rate 300
+	T+M-> C_1 rate 0.286
+	F_a+C_1-> C_2 rate 2.64
+	C_2 ->  F_a+C_1 rate 22.7
+	C_2 ->  C_1+M rate 15.5
+	C_1+M -> C_2 rate 366
+	
