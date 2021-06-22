@@ -180,6 +180,7 @@ EstParametersMS = run(ms,problem,nOptRuns);
 %integration bounds
 tin=0;
 tfin=255;
+r_old = r;
 r = EstParametersMS;
 
 %integrate the model
@@ -247,6 +248,10 @@ end
 % fi(1), fa(2), t(3), c0(4), c1(5), c2(6), fm(7)
 legend({'FBNi', 'FBNa', 'THB', 'C0', 'C1', 'C2', 'FM'})
 hold off
+
+%% PCS
+
+q_star = r;
 
 
 
