@@ -129,9 +129,12 @@ colorMap = lines(7);
 
 if choice=='y'
     Y = Y.*mi;
+    figure_name = 'ODEs with normalized initial amount';
+else
+    figure_name = 'ODEs with original initial amount';
 end
 
-figure(1)
+figure('NumberTitle', 'off', 'Name', figure_name)
 for i=1:7
     plot(T,Y(:,i), 'LineWidth', 1.5, 'color', colorMap(i,:));
     hold on
@@ -194,9 +197,12 @@ colorMap = lines(7);
 
 if choice=='y'
     Y = Y.*mi;
+    figure_name = 'Estimated function with normalized initial amount';
+else
+    figure_name = 'Estimated function with original initial amount';
 end
 
-figure(2)
+figure('NumberTitle', 'off', 'Name', figure_name)
 for i=1:7
     plot(T,Y(:,i), 'LineWidth', 1.5, 'color', colorMap(i,:));
     hold on
@@ -251,8 +257,14 @@ hold off
 
 %% PCS
 
+% q_star è il vettore dei rate che esce dall'ottimizzazione
 q_star = r;
-
+% q_t è il vettore degli indici dei rate che sono potenzialmente
+% unidentifiable
+q_t = [];
+% tolerances: eta and delta
+eta = 1e-10;
+delta = 0.8;
 
 
 

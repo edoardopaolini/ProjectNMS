@@ -251,7 +251,14 @@ hold off
 
 %% PCS
 
-
+% q_star è il vettore dei rate che esce dall'ottimizzazione
+q_star = r;
+% q_t è il vettore degli indici dei rate che sono potenzialmente
+% unidentifiable
+q_t = [];
+% tolerances: eta and delta
+eta = 1e-10;
+delta = 0.8;
 
 
 
